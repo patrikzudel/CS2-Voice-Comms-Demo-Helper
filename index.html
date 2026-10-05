@@ -7,9 +7,9 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
 <title>PatrikZero's Demo Voice Comms Helper</title>
 <style>
-:root{--bg:#101415;--panel:#202526;--line:rgba(255,255,255,.12);--line2:rgba(255,255,255,.22);--text:#eef2f1;--muted:#a5acad;--accent:#58a7c1;--accent2:#91d4e8;--mono:Consolas,"Cascadia Code",monospace;--cond:"Arial Narrow","Segoe UI",Arial,sans-serif}
+:root{--bg:#101415;--panel:#202526;--line:rgba(255,255,255,.12);--line2:rgba(255,255,255,.22);--text:#eef2f1;--muted:#a5acad;--accent:#E48717;--accent2:#FFB454;--mono:Consolas,"Cascadia Code",monospace;--cond:"Arial Narrow","Segoe UI",Arial,sans-serif}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;color:var(--text);font-family:"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 20% 0%,rgba(84,119,126,.14),transparent 30%),linear-gradient(rgba(9,12,13,.87),rgba(9,12,13,.96)),#101415}
+body{margin:0;min-height:100vh;color:var(--text);font-family:"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 20% 0%,rgba(228,135,23,.14),transparent 30%),linear-gradient(rgba(9,12,13,.87),rgba(9,12,13,.96)),#101415}
 button,input{font:inherit}
 button:focus-visible,input:focus-visible,.player input:focus-visible+.player-card{outline:2px solid var(--accent2);outline-offset:3px}
 main{width:min(980px,calc(100% - 28px));margin:0 auto;padding:34px 0 60px}
@@ -18,40 +18,40 @@ main{width:min(980px,calc(100% - 28px));margin:0 auto;padding:34px 0 60px}
 .section{padding:22px 20px;border-bottom:1px solid var(--line)}.section:last-child{border-bottom:0}
 h2{margin:0 0 8px;font:700 21px/1.2 "Segoe UI",Arial,sans-serif;letter-spacing:-.01em}
 p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
-code{font-family:var(--mono);font-size:.94em;color:#eef9fb;background:rgba(0,0,0,.2);padding:2px 5px}
+code{font-family:var(--mono);font-size:.94em;color:#fff3e3;background:rgba(0,0,0,.2);padding:2px 5px}
 .modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .mode{cursor:pointer;min-height:92px;padding:17px 18px;border:1px solid var(--line2);color:var(--text);background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.015));text-align:left;transition:.15s ease}
-.mode:hover,.mode.active{border-color:rgba(145,212,232,.58);background:linear-gradient(135deg,rgba(88,167,193,.16),rgba(255,255,255,.02))}
+.mode:hover,.mode.active{border-color:rgba(255,180,84,.58);background:linear-gradient(135deg,rgba(228,135,23,.16),rgba(255,255,255,.02))}
 .mode strong{display:block;font:700 18px/1.15 "Segoe UI",Arial,sans-serif}
 .mode span{display:block;margin-top:7px;color:var(--muted);font-size:12.5px;line-height:1.45}
 .flow{display:none}.flow.show{display:block}
 .command{margin-top:15px;border:1px solid var(--line2);background:#0d1112}
 .command-head{min-height:39px;display:flex;justify-content:flex-end;border-bottom:1px solid rgba(255,255,255,.08)}
-.copy{cursor:pointer;border:0;border-left:1px solid rgba(255,255,255,.08);padding:0 14px;background:rgba(88,167,193,.14);color:#ecf6f8;font:700 11px "Segoe UI",Arial,sans-serif;letter-spacing:.01em}
-.copy:hover{background:rgba(88,167,193,.26)}
+.copy{cursor:pointer;border:0;border-left:1px solid rgba(255,255,255,.08);padding:0 14px;background:rgba(228,135,23,.14);color:#fff3e3;font:700 11px "Segoe UI",Arial,sans-serif;letter-spacing:.01em}
+.copy:hover{background:rgba(228,135,23,.26)}
 .command-line{padding:16px;font:13px/1.55 var(--mono);white-space:nowrap;overflow-x:auto;color:#eef4f3}.prompt{color:var(--accent)}
 .player-count{margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .player-count label{font:600 12px "Segoe UI",Arial,sans-serif;letter-spacing:.01em;color:#dfe4e3}
 .stepper{display:flex;align-items:stretch;border:1px solid var(--line2);background:rgba(0,0,0,.15)}
-.stepper button{width:38px;border:0;background:rgba(255,255,255,.03);color:var(--text);cursor:pointer;font-size:18px}.stepper button:hover{background:rgba(88,167,193,.14)}
+.stepper button{width:38px;border:0;background:rgba(255,255,255,.03);color:var(--text);cursor:pointer;font-size:18px}.stepper button:hover{background:rgba(228,135,23,.14)}
 .stepper input{width:64px;border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);background:transparent;color:var(--text);text-align:center;font:14px var(--mono);-moz-appearance:textfield}
 .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .player-grid{margin-top:14px;display:grid;grid-template-columns:repeat(10,minmax(58px,1fr));gap:7px}
 .player{position:relative;cursor:pointer;min-width:0}.player input{position:absolute;opacity:0;pointer-events:none}
 .player-card{min-height:84px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(0,0,0,.08));transition:.13s ease;position:relative}
 .player-card:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--accent);transform:scaleX(0);transition:.13s ease}
-.player:hover .player-card{border-color:rgba(145,212,232,.38);transform:translateY(-1px)}
-.player input:checked+.player-card{border-color:rgba(145,212,232,.66);background:linear-gradient(180deg,rgba(88,167,193,.19),rgba(88,167,193,.05))}
+.player:hover .player-card{border-color:rgba(255,180,84,.38);transform:translateY(-1px)}
+.player input:checked+.player-card{border-color:rgba(255,180,84,.66);background:linear-gradient(180deg,rgba(228,135,23,.19),rgba(228,135,23,.05))}
 .player input:checked+.player-card:after{transform:scaleX(1)}
 .id-label{font:600 10px "Segoe UI",Arial,sans-serif;letter-spacing:.01em;color:#7e8788;margin-bottom:6px}.id-number{font:750 28px/1 "Segoe UI",Arial,sans-serif;color:#f3f5f5}
-.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:#101516;border:1px solid rgba(145,212,232,.42);padding:10px 13px;font:700 11px "Segoe UI",Arial,sans-serif;letter-spacing:.01em;transition:.15s ease}.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:#101516;border:1px solid rgba(255,180,84,.42);padding:10px 13px;font:700 11px "Segoe UI",Arial,sans-serif;letter-spacing:.01em;transition:.15s ease}.toast.show{opacity:1;transform:translate(-50%,0)}
 
 .follow-x{
   flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;padding:7px 10px;
   border:1px solid var(--line);background:rgba(255,255,255,.025);color:#dfe4e4;
   text-decoration:none;font:600 12px "Segoe UI",Arial,sans-serif;transition:.14s ease
 }
-.follow-x:hover{border-color:rgba(145,212,232,.45);background:rgba(88,167,193,.10);color:#fff}
+.follow-x:hover{border-color:rgba(255,180,84,.45);background:rgba(228,135,23,.10);color:#fff}
 .follow-x svg{width:13px;height:13px;fill:currentColor}
 .follow-x span{color:var(--muted);font-weight:500}
 
