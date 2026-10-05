@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111516">
+<title>PatrikZero's Demo Voice Comms Helper</title>
+<style>
+:root{--bg:#101415;--panel:#202526;--line:rgba(255,255,255,.12);--line2:rgba(255,255,255,.22);--text:#eef2f1;--muted:#a5acad;--accent:#58a7c1;--accent2:#91d4e8;--mono:Consolas,"Cascadia Code",monospace;--cond:"Arial Narrow","Segoe UI",Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font-family:"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 20% 0%,rgba(84,119,126,.14),transparent 30%),linear-gradient(rgba(9,12,13,.87),rgba(9,12,13,.96)),#101415}
+button,input{font:inherit}
+button:focus-visible,input:focus-visible,.player input:focus-visible+.player-card{outline:2px solid var(--accent2);outline-offset:3px}
+main{width:min(980px,calc(100% - 28px));margin:0 auto;padding:34px 0 60px}
+.app{border:1px solid var(--line);background:linear-gradient(180deg,rgba(39,44,45,.96),rgba(22,27,28,.99));box-shadow:0 24px 70px rgba(0,0,0,.38)}
+.app-title{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 20px;border-bottom:1px solid var(--line);font:700 15px "Segoe UI",Arial,sans-serif;letter-spacing:.015em}
+.section{padding:22px 20px;border-bottom:1px solid var(--line)}.section:last-child{border-bottom:0}
+h2{margin:0 0 8px;font:700 21px/1.2 "Segoe UI",Arial,sans-serif;letter-spacing:-.01em}
+p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+code{font-family:var(--mono);font-size:.94em;color:#eef9fb;background:rgba(0,0,0,.2);padding:2px 5px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.mode{cursor:pointer;min-height:92px;padding:17px 18px;border:1px solid var(--line2);color:var(--text);background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.015));text-align:left;transition:.15s ease}
+.mode:hover,.mode.active{border-color:rgba(145,212,232,.58);background:linear-gradient(135deg,rgba(88,167,193,.16),rgba(255,255,255,.02))}
+.mode strong{display:block;font:700 18px/1.15 "Segoe UI",Arial,sans-serif}
+.mode span{display:block;margin-top:7px;color:var(--muted);font-size:12.5px;line-height:1.45}
+.flow{display:none}.flow.show{display:block}
+.command{margin-top:15px;border:1px solid var(--line2);background:#0d1112}
+.command-head{min-height:39px;display:flex;justify-content:flex-end;border-bottom:1px solid rgba(255,255,255,.08)}
+.copy{cursor:pointer;border:0;border-left:1px solid rgba(255,255,255,.08);padding:0 14px;background:rgba(88,167,193,.14);color:#ecf6f8;font:700 11px "Segoe UI",Arial,sans-serif;letter-spacing:.01em}
+.copy:hover{background:rgba(88,167,193,.26)}
+.command-line{padding:16px;font:13px/1.55 var(--mono);white-space:nowrap;overflow-x:auto;color:#eef4f3}.prompt{color:var(--accent)}
+.player-count{margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.player-count label{font:600 12px "Segoe UI",Arial,sans-serif;letter-spacing:.01em;color:#dfe4e3}
+.stepper{display:flex;align-items:stretch;border:1px solid var(--line2);background:rgba(0,0,0,.15)}
+.stepper button{width:38px;border:0;background:rgba(255,255,255,.03);color:var(--text);cursor:pointer;font-size:18px}.stepper button:hover{background:rgba(88,167,193,.14)}
+.stepper input{width:64px;border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);background:transparent;color:var(--text);text-align:center;font:14px var(--mono);-moz-appearance:textfield}
+.stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.player-grid{margin-top:14px;display:grid;grid-template-columns:repeat(10,minmax(58px,1fr));gap:7px}
+.player{position:relative;cursor:pointer;min-width:0}.player input{position:absolute;opacity:0;pointer-events:none}
+.player-card{min-height:84px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(0,0,0,.08));transition:.13s ease;position:relative}
+.player-card:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--accent);transform:scaleX(0);transition:.13s ease}
+.player:hover .player-card{border-color:rgba(145,212,232,.38);transform:translateY(-1px)}
+.player input:checked+.player-card{border-color:rgba(145,212,232,.66);background:linear-gradient(180deg,rgba(88,167,193,.19),rgba(88,167,193,.05))}
+.player input:checked+.player-card:after{transform:scaleX(1)}
+.id-label{font:600 10px "Segoe UI",Arial,sans-serif;letter-spacing:.01em;color:#7e8788;margin-bottom:6px}.id-number{font:750 28px/1 "Segoe UI",Arial,sans-serif;color:#f3f5f5}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:#101516;border:1px solid rgba(145,212,232,.42);padding:10px 13px;font:700 11px "Segoe UI",Arial,sans-serif;letter-spacing:.01em;transition:.15s ease}.toast.show{opacity:1;transform:translate(-50%,0)}
+
+.follow-x{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;padding:7px 10px;
+  border:1px solid var(--line);background:rgba(255,255,255,.025);color:#dfe4e4;
+  text-decoration:none;font:600 12px "Segoe UI",Arial,sans-serif;transition:.14s ease
+}
+.follow-x:hover{border-color:rgba(145,212,232,.45);background:rgba(88,167,193,.10);color:#fff}
+.follow-x svg{width:13px;height:13px;fill:currentColor}
+.follow-x span{color:var(--muted);font-weight:500}
+
+@media(max-width:900px){.player-grid{grid-template-columns:repeat(5,minmax(58px,1fr))}}
+@media(max-width:620px){main{padding-top:18px}.section{padding:18px 14px}.app-title{padding:10px 14px;align-items:flex-start;flex-direction:column}.follow-x{align-self:flex-start}.modes{grid-template-columns:1fr}.player-grid{grid-template-columns:repeat(4,minmax(54px,1fr))}}
+</style>
+</head>
+<body>
+<main>
+<section class="app">
+<div class="app-title">
+  <div>PatrikZero's Demo Voice Comms Helper</div>
+  <a class="follow-x" href="https://x.com/PatrikZero" target="_blank" rel="noopener noreferrer" aria-label="Follow PatrikZero on X">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817-5.967 6.817H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg>
+    <span>Follow me on X</span>
+    PatrikZero
+  </a>
+</div>
+
+<div class="section">
+  <h2>Who do you want to listen to?</h2>
+  <div class="modes">
+    <button class="mode" id="allMode" type="button"><strong>All voice comms</strong><span>Hear every recorded player.</span></button>
+    <button class="mode" id="specificMode" type="button"><strong>Specific players</strong><span>Choose the player IDs yourself.</span></button>
+  </div>
+</div>
+
+<div class="flow" id="allFlow">
+  <div class="section">
+    <h2>Paste this before playing the demo</h2>
+    <div class="command">
+      <div class="command-head"><button class="copy" data-copy="allCommand" type="button">Copy</button></div>
+      <div class="command-line" id="allCommand"><span class="prompt">&gt; </span>tv_relaytextchat 2; tv_listen_voice_indices -1; tv_listen_voice_indices_h -1</div>
+    </div>
+  </div>
+</div>
+
+<div class="flow" id="specificFlow">
+  <div class="section">
+    <h2>Find the player IDs</h2>
+    <p>Load the demo and run <code>spec_player 1</code>, <code>spec_player 2</code>, and so on until you have checked every player. Note the IDs you want to hear, then leave the demo.</p>
+
+    <div class="player-count">
+      <label for="playerCount">Players in demo</label>
+      <div class="stepper">
+        <button id="countDown" type="button" aria-label="Decrease player count">−</button>
+        <input id="playerCount" type="number" min="1" max="64" value="10" inputmode="numeric" aria-label="Players in demo">
+        <button id="countUp" type="button" aria-label="Increase player count">+</button>
+      </div>
+    </div>
+
+    <div class="player-grid" id="playerGrid" aria-label="Player IDs"></div>
+  </div>
+
+  <div class="section">
+    <h2>Exit the demo, paste this, then load it again</h2>
+    <div class="command">
+      <div class="command-head"><button class="copy" data-copy="specificCommand" type="button">Copy</button></div>
+      <div class="command-line" id="specificCommand"><span class="prompt">&gt; </span>tv_relaytextchat 2; tv_listen_voice_indices 0; tv_listen_voice_indices_h 0</div>
+    </div>
+  </div>
+</div>
+</section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Copied</div>
+
+<script>
+(() => {
+  const allMode=document.getElementById('allMode'),specificMode=document.getElementById('specificMode');
+  const allFlow=document.getElementById('allFlow'),specificFlow=document.getElementById('specificFlow');
+  const playerGrid=document.getElementById('playerGrid'),playerCount=document.getElementById('playerCount');
+  const specificCommand=document.getElementById('specificCommand'),toast=document.getElementById('toast');
+  const selected=new Set(); let toastTimer;
+
+  function setMode(mode){
+    const all=mode==='all';
+    allMode.classList.toggle('active',all);specificMode.classList.toggle('active',!all);
+    allFlow.classList.toggle('show',all);specificFlow.classList.toggle('show',!all);
+  }
+  allMode.addEventListener('click',()=>setMode('all'));
+  specificMode.addEventListener('click',()=>setMode('specific'));
+
+  function clampCount(v){const n=parseInt(v,10);return Number.isFinite(n)?Math.max(1,Math.min(64,n)):10}
+  function signed32(v){return v>=0x80000000n?Number(v-0x100000000n):Number(v)}
+
+  function updateCommand(){
+    let low=0n,high=0n;
+    for(const slot of selected){
+      const bit=BigInt(slot-1);
+      if(bit<32n) low|=1n<<bit; else high|=1n<<(bit-32n);
+    }
+    specificCommand.innerHTML=`<span class="prompt">&gt; </span>tv_relaytextchat 2; tv_listen_voice_indices ${signed32(low)}; tv_listen_voice_indices_h ${signed32(high)}`;
+  }
+
+  function renderPlayers(){
+    const count=clampCount(playerCount.value);playerCount.value=count;
+    for(const slot of [...selected]) if(slot>count) selected.delete(slot);
+    playerGrid.innerHTML='';
+    for(let slot=1;slot<=count;slot++){
+      const label=document.createElement('label');label.className='player';
+      const input=document.createElement('input');input.type='checkbox';input.checked=selected.has(slot);input.setAttribute('aria-label',`Player ID ${slot}`);
+      const card=document.createElement('span');card.className='player-card';card.innerHTML=`<span class="id-label">Player</span><span class="id-number">${slot}</span>`;
+      input.addEventListener('change',()=>{input.checked?selected.add(slot):selected.delete(slot);updateCommand()});
+      label.append(input,card);playerGrid.appendChild(label);
+    }
+    updateCommand();
+  }
+
+  document.getElementById('countDown').addEventListener('click',()=>{playerCount.value=clampCount(Number(playerCount.value)-1);renderPlayers()});
+  document.getElementById('countUp').addEventListener('click',()=>{playerCount.value=clampCount(Number(playerCount.value)+1);renderPlayers()});
+  playerCount.addEventListener('change',renderPlayers);
+  playerCount.addEventListener('blur',renderPlayers);
+  playerCount.addEventListener('keydown',e=>{if(e.key==='Enter')renderPlayers()});
+
+  function rawCommand(el){return el.textContent.replace(/^>\s*/,'').trim()}
+  async function copyText(text){
+    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return}
+    const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()
+  }
+  function showToast(){clearTimeout(toastTimer);toast.classList.add('show');toastTimer=setTimeout(()=>toast.classList.remove('show'),1200)}
+  document.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{
+    const el=document.getElementById(btn.dataset.copy);
+    try{await copyText(rawCommand(el));const old=btn.textContent;btn.textContent='Copied';showToast();setTimeout(()=>btn.textContent=old,1000)}
+    catch{btn.textContent='Copy failed';setTimeout(()=>btn.textContent='Copy',1200)}
+  }));
+
+  renderPlayers();
+})();
+</script>
+</body>
+</html>
