@@ -92,7 +92,7 @@ code{font-family:var(--mono);font-size:.94em;color:#fff3e3;background:rgba(0,0,0
 <div class="flow" id="specificFlow">
   <div class="section">
     <h2>Find the player IDs</h2>
-    <p>Load the demo and run <code>spec_player 0</code>, <code>spec_player 1</code>, and so on until you have checked every player. Note the IDs you want to hear, then leave the demo.</p>
+    <p>Load the demo and run <code>spec_player 1</code>, <code>spec_player 2</code>, and so on until you have checked every player. Note the IDs you want to hear, then leave the demo.</p>
 
     <div class="player-count">
       <label for="playerCount">Players in demo</label>
@@ -141,7 +141,7 @@ code{font-family:var(--mono);font-size:.94em;color:#fff3e3;background:rgba(0,0,0
   function updateCommand(){
     let low=0n,high=0n;
     for(const slot of selected){
-      const bit=BigInt(slot);
+      const bit=BigInt(slot-1);
       if(bit<32n) low|=1n<<bit; else high|=1n<<(bit-32n);
     }
     specificCommand.innerHTML=`<span class="prompt">&gt; </span>tv_relaytextchat 2; tv_listen_voice_indices ${signed32(low)}; tv_listen_voice_indices_h ${signed32(high)}`;
@@ -149,9 +149,9 @@ code{font-family:var(--mono);font-size:.94em;color:#fff3e3;background:rgba(0,0,0
 
   function renderPlayers(){
     const count=clampCount(playerCount.value);playerCount.value=count;
-    for(const slot of [...selected]) if(slot>=count) selected.delete(slot);
+    for(const slot of [...selected]) if(slot>count) selected.delete(slot);
     playerGrid.innerHTML='';
-    for(let slot=0;slot<count;slot++){
+    for(let slot=1;slot<=count;slot++){
       const label=document.createElement('label');label.className='player';
       const input=document.createElement('input');input.type='checkbox';input.checked=selected.has(slot);input.setAttribute('aria-label',`Player ID ${slot}`);
       const card=document.createElement('span');card.className='player-card';card.innerHTML=`<span class="id-label">Player</span><span class="id-number">${slot}</span>`;
